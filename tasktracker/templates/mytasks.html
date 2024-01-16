@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Index</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            padding-left: 60px;
+            padding-right: 60px;
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            jQuery(document).ready(function() {
+                try {
+                    jQuery('#btnLogout').click(function() {
+                        window.location.href = '/users/sign-out';
+                    });
+
+                    jQuery('#btnNewTask').click(function() {
+                        window.location.href = '/tasks/new-task';
+                    });
+                } catch (error) {
+                    console.error('An error occurred:', error);
+                }
+            });
+
+            window.viewTask = function(taskId) {
+               window.location.href = '/tasks/view/' + taskId;
+            }
+        }
+    </script>
+</head>
+<body class="container">
+    <div class="d-flex justify-content-between align-items-center mt-5">
+        <h1>{{ current_user.name }}
+            <button id="btnLogout" class="btn btn-primary">Log Out</button>
+            <button id="btnNewTask" class="btn btn-primary" onclick="window.location.href='/tasks/new-task'">Create New Task</button>
+        </h1>
+    </div>
+
+    <h2 class="mt-5">Tasks Assigned to Me</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Task ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Creator</th>
+                <th>Assignee</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in assigned_tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.status.value }}</td>
+                <td>{{ task.created_by }}</td>
+                <td>{{ task.assigned_to }}</td>
+                <td><button onclick="viewTask({{ task.id }})" class="btn btn-primary">View</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2 class="mt-5">Tasks Created by Me</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Task ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Creator</th>
+                <th>Assignee</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in created_tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.status.value }}</td>
+                <td>{{ task.created_by }}</td>
+                <td>{{ task.assigned_to }}</td>
+                <td><button onclick="viewTask({{ task.id }})" class="btn btn-primary">View</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

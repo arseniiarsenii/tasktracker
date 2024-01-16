@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="container">
+    <h1>View Task</h1>
+    <form id="edit-task-form">
+        <div class="form-group">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" value="{{ task.id }}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="created_at">Created At</label>
+            <input type="text" class="form-control" id="created_at" value="{{ task.created_at }}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="updated_at">Updated At</label>
+            <input type="text" class="form-control" id="updated_at" value="{{ task.updated_at }}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="created_by">Created By</label>
+            <input type="text" class="form-control" id="created_by" value="{{ task.created_by }}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" value="{{ task.title }}" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" required>{{ task.description }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="assigned_to">Assigned To (Email)</label>
+            <input type="email" class="form-control" id="assigned_to" value="{{ task.assigned_to }}" required>
+        </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select class="form-control" id="status" required>
+                <option value="pending" {% if task.status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                <option value="done" {% if task.status == 'done' %}selected{% endif %}>Done</option>
+                <option value="rejected" {% if task.status == 'rejected' %}selected{% endif %}>Rejected</option>
+            </select>
+        </div>
+        <button id="btnSave" type="submit" class="btn btn-primary">Save</button>
+        <button id="btnDelete" class="btn btn-danger">Delete</button>
+    </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var taskId = {{ task.id }};
+
+            document.getElementById('edit-task-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                var title = document.getElementById('title').value;
+                var description = document.getElementById('description').value;
+                var assigned_to = document.getElementById('assigned_to').value;
+                var status = document.getElementById('status').value;
+
+                fetch('/tasks/' + taskId, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        description: description,
+                        assigned_to: assigned_to,
+                        status: status
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    window.location.href = '/';
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+            });
+
+            document.getElementById('btnDelete').addEventListener('click', function(e) {
+                e.preventDefault();
+
+                fetch('/tasks/' + taskId, {
+                    method: 'DELETE',
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    window.location.href = '/';
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

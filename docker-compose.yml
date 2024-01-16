@@ -1,0 +1,6 @@
+services:
+  tasktracker:
+    build: .
+    ports:
+      - "0.0.0.0:8000:80"
+    restart: "no"

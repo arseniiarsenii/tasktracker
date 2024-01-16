@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create New Task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body class="container">
+    <h1>Create New Task</h1>
+    <form id="create-task-form">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="assigned_to">Assigned To (Email)</label>
+            <input type="email" class="form-control" id="assigned_to" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <script>
+    $(document).ready(function() {
+        $('#create-task-form').submit(function(e) {
+            e.preventDefault();
+
+            var title = $('#title').val();
+            var description = $('#description').val();
+            var assigned_to = $('#assigned_to').val();
+
+            $.ajax({
+                url: '/tasks/create-task',
+                type: 'POST',
+                data: JSON.stringify({
+                    title: title,
+                    description: description,
+                    assigned_to: assigned_to
+                }),
+                contentType: 'application/json',
+                success: function() {
+                    window.location.href = '/';
+                },
+                error: function() {
+                    alert('An error occurred while creating the task.');
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>
